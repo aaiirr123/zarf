@@ -102,7 +102,7 @@ var genCLIDocs = &cobra.Command{
 					if toolCmd.Use == "monitor" {
 						resetStringFlags(toolCmd)
 					}
-					
+
 					if toolCmd.Use == "yq" {
 						for _, subCmd := range toolCmd.Commands() {
 							if subCmd.Name() == "shell-completion" {
@@ -201,7 +201,7 @@ var createReadOnlyGiteaUser = &cobra.Command{
 		}
 
 		// Create the non-admin user
-		if err = git.New(state.GitServer).CreateReadOnlyUser(); err != nil {
+		if err = git.New(state.GitServer, false).CreateReadOnlyUser(); err != nil {
 			message.WarnErr(err, lang.CmdInternalCreateReadOnlyGiteaUserErr)
 		}
 	},
@@ -221,7 +221,7 @@ var createPackageRegistryToken = &cobra.Command{
 
 		// If we are setup to use an internal artifact server, create the artifact registry token
 		if state.ArtifactServer.InternalServer {
-			token, err := git.New(state.GitServer).CreatePackageRegistryToken()
+			token, err := git.New(state.GitServer, false).CreatePackageRegistryToken()
 			if err != nil {
 				message.WarnErr(err, lang.CmdInternalArtifactRegistryGiteaTokenErr)
 			}

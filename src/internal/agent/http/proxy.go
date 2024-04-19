@@ -73,7 +73,7 @@ func proxyRequestTransform(r *http.Request) error {
 	} else {
 		switch {
 		case isGitUserAgent(r.UserAgent()):
-			targetURL, err = transform.GitURL(zarfState.GitServer.Address, getTLSScheme(r.TLS)+r.Host+r.URL.String(), zarfState.GitServer.PushUsername)
+			targetURL, err = transform.GitURL(zarfState.GitServer.Address, getTLSScheme(r.TLS)+r.Host+r.URL.String(), zarfState.GitServer.PushUsername, zarfState.GitServer.Group, false)
 		case isPipUserAgent(r.UserAgent()):
 			targetURL, err = transform.PipTransformURL(zarfState.ArtifactServer.Address, getTLSScheme(r.TLS)+r.Host+r.URL.String())
 		case isNpmUserAgent(r.UserAgent()):

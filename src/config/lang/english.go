@@ -305,8 +305,10 @@ $ zarf package mirror-resources <your-package.tar.zst> \
 	CmdPackageDeployInvalidCLIVersionWarn              = "CLIVersion is set to '%s' which can cause issues with package creation and deployment. To avoid such issues, please set the value to the valid semantic version for this version of Zarf."
 	CmdPackageDeployErr                                = "Failed to deploy package: %s"
 
-	CmdPackageMirrorFlagComponents = "Comma-separated list of components to mirror.  This list will be respected regardless of a component's 'required' or 'default' status.  Globbing component names with '*' and deselecting components with a leading '-' are also supported."
-	CmdPackageMirrorFlagNoChecksum = "Turns off the addition of a checksum to image tags (as would be used by the Zarf Agent) while mirroring images."
+	CmdPackageMirrorFlagComponents         = "Comma-separated list of components to mirror.  This list will be respected regardless of a component's 'required' or 'default' status.  Globbing component names with '*' and deselecting components with a leading '-' are also supported."
+	CmdPackageMirrorFlagNoChecksum         = "Turns off the addition of a checksum to image tags (as would be used by the Zarf Agent) while mirroring images."
+	CmdPackageGitGroup                     = "The group to add the git repo to."
+	CmdPackageMirrorFlagNoRegistryChecksum = "Turns off the addition of a checksum to a repository (as would be used by the Zarf Agent) while mirroring them."
 
 	CmdPackageInspectFlagSbom    = "View SBOM contents while inspecting the package"
 	CmdPackageInspectFlagSbomOut = "Specify an output directory for the SBOMs from the inspected Zarf package"

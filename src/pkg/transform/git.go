@@ -16,10 +16,10 @@ import (
 var gitURLRegex = regexp.MustCompile(`^(?P<proto>[a-z]+:\/\/)(?P<hostPath>.+?)\/(?P<repo>[\w\-\.]+?)?(?P<git>\.git)?(\/)?(?P<atRef>@(?P<force>\+)?(?P<ref>[\/\+\w\-\.]+))?(?P<gitPath>\/(?P<gitPathId>info\/.*|git-upload-pack|git-receive-pack))?$`)
 
 // MutateGitURLsInText changes the gitURL hostname to use the repository Zarf is configured to use.
-func MutateGitURLsInText(logger Log, targetBaseURL string, text string, pushUser string) string {
+func MutateGitURLsInText(logger Log, targetBaseURL string, text string, pushUser string, group string, noChecksum bool) string {
 	extractPathRegex := regexp.MustCompile(`[a-z]+:\/\/[^\/]+\/(.*\.git)`)
 	output := extractPathRegex.ReplaceAllStringFunc(text, func(match string) string {
-		output, err := GitURL(targetBaseURL, match, pushUser)
+		output, err := GitURL(targetBaseURL, match, pushUser, group, noChecksum)
 		if err != nil {
 			logger("Unable to transform the git url, using the original url we have: %s", match)
 			return match
@@ -44,7 +44,7 @@ func GitURLSplitRef(sourceURL string) (string, string, error) {
 }
 
 // GitURLtoFolderName takes a git url and returns the folder name for the repo in the Zarf package.
-func GitURLtoFolderName(sourceURL string) (string, error) {
+func GitURLtoFolderName(sourceURL string, noChecksum bool) (string, error) {
 	get, err := helpers.MatchRegex(gitURLRegex, sourceURL)
 
 	if err != nil {
@@ -55,17 +55,19 @@ func GitURLtoFolderName(sourceURL string) (string, error) {
 	repoName := get("repo")
 	// NOTE: For folders we use the full URL (without any protocol stuff) so that different refs are kept in different folders on disk to avoid conflicts
 	// Add crc32 hash of the repoName to the end of the repo
-	gitURL := fmt.Sprintf("%s%s/%s%s%s", get("proto"), get("hostPath"), get("repo"), get("git"), get("atRef"))
+	if !noChecksum {
+		gitURL := fmt.Sprintf("%s%s/%s%s%s", get("proto"), get("hostPath"), get("repo"), get("git"), get("atRef"))
 
-	checksum := helpers.GetCRCHash(gitURL)
+		checksum := helpers.GetCRCHash(gitURL)
 
-	newRepoName := fmt.Sprintf("%s-%d", repoName, checksum)
+		repoName = fmt.Sprintf("%s-%d", repoName, checksum)
+	}
 
-	return newRepoName, nil
+	return repoName, nil
 }
 
 // GitURLtoRepoName takes a git url and returns the name of the repo in the remote airgap repository.
-func GitURLtoRepoName(sourceURL string) (string, error) {
+func GitURLtoRepoName(sourceURL string, noChecksum bool) (string, error) {
 	get, err := helpers.MatchRegex(gitURLRegex, sourceURL)
 
 	if err != nil {
@@ -76,19 +78,21 @@ func GitURLtoRepoName(sourceURL string) (string, error) {
 	repoName := get("repo")
 	// NOTE: We remove the .git and protocol so that https://zarf.dev/repo.git and http://zarf.dev/repo
 	// resolve to the same repo (as they would in real life)
-	sanitizedURL := fmt.Sprintf("%s/%s", get("hostPath"), repoName)
+	if !noChecksum {
+		sanitizedURL := fmt.Sprintf("%s/%s", get("hostPath"), repoName)
 
-	// Add crc32 hash of the repoName to the end of the repo
-	checksum := helpers.GetCRCHash(sanitizedURL)
+		//Add crc32 hash of the repoName to the end of the repo
+		checksum := helpers.GetCRCHash(sanitizedURL)
 
-	newRepoName := fmt.Sprintf("%s-%d", repoName, checksum)
+		repoName = fmt.Sprintf("%s-%d", repoName, checksum)
+	}
 
-	return newRepoName, nil
+	return repoName, nil
 }
 
 // GitURL takes a base URL, a source url and a username and returns a Zarf-compatible url.
-func GitURL(targetBaseURL string, sourceURL string, pushUser string) (*url.URL, error) {
-	repoName, err := GitURLtoRepoName(sourceURL)
+func GitURL(targetBaseURL string, sourceURL string, pushUser string, group string, noChecksum bool) (*url.URL, error) {
+	repoName, err := GitURLtoRepoName(sourceURL, noChecksum)
 	if err != nil {
 		return nil, err
 	}
@@ -102,6 +106,13 @@ func GitURL(targetBaseURL string, sourceURL string, pushUser string) (*url.URL, 
 		return nil, fmt.Errorf("unable to extract the airgap target url from the url %s", sourceURL)
 	}
 
-	output := fmt.Sprintf("%s/%s/%s%s%s", targetBaseURL, pushUser, repoName, matches[idx("git")], matches[idx("gitPath")])
+	var output string
+
+	if group != "" {
+		output = fmt.Sprintf("%s/%s/%s%s%s", targetBaseURL, group, repoName, matches[idx("git")], matches[idx("gitPath")])
+	} else {
+		output = fmt.Sprintf("%s/%s/%s%s%s", targetBaseURL, pushUser, repoName, matches[idx("git")], matches[idx("gitPath")])
+	}
+
 	return url.Parse(output)
 }

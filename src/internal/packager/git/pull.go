@@ -51,7 +51,7 @@ func (g *Git) Pull(gitURL, targetFolder string, shallow bool) error {
 	}
 
 	// Construct a path unique to this git repo
-	repoFolder, err := transform.GitURLtoFolderName(gitURL)
+	repoFolder, err := transform.GitURLtoFolderName(gitURL, g.NoChecksum)
 	if err != nil {
 		return err
 	}

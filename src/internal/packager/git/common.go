@@ -21,6 +21,8 @@ type Git struct {
 	Spinner *message.Spinner
 	// Target working directory for the git repository.
 	GitPath string
+
+	NoChecksum bool
 }
 
 const onlineRemoteName = "online-upstream"
@@ -28,17 +30,19 @@ const offlineRemoteName = "offline-downstream"
 const emptyRef = ""
 
 // New creates a new git instance with the provided server config.
-func New(server types.GitServerInfo) *Git {
+func New(server types.GitServerInfo, noChecksum bool) *Git {
 	return &Git{
-		Server: server,
+		Server:     server,
+		NoChecksum: noChecksum,
 	}
 }
 
 // NewWithSpinner creates a new git instance with the provided server config and spinner.
-func NewWithSpinner(server types.GitServerInfo, spinner *message.Spinner) *Git {
+func NewWithSpinner(server types.GitServerInfo, spinner *message.Spinner, noChecksum bool) *Git {
 	return &Git{
-		Server:  server,
-		Spinner: spinner,
+		Server:     server,
+		Spinner:    spinner,
+		NoChecksum: noChecksum,
 	}
 }
 

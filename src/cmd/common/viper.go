@@ -40,6 +40,7 @@ const (
 	VInitGitPushPass = "init.git.push_password"
 	VInitGitPullUser = "init.git.pull_username"
 	VInitGitPullPass = "init.git.pull_password"
+	VInitGitGroup    = "init.git.group"
 
 	// Init Registry config keys
 

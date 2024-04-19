@@ -9,8 +9,6 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
-
-	"github.com/defenseunicorns/pkg/helpers"
 )
 
 const (
@@ -70,14 +68,14 @@ func GenTransformURL(targetBaseURL string, sourceURL string) (*url.URL, error) {
 
 	// NOTE: We remove the protocol, port and file name so that https://zarf.dev:443/package/package1.zip and http://zarf.dev/package/package2.zip
 	// resolve to the same "folder" (as they would in real life)
-	sanitizedURL := fmt.Sprintf("%s%s%s", matches[idx("host")], matches[idx("startPath")], matches[idx("midPath")])
+	//sanitizedURL := fmt.Sprintf("%s%s%s", matches[idx("host")], matches[idx("startPath")], matches[idx("midPath")])
 
 	packageName := strings.ReplaceAll(matches[idx("startPath")], "/", "")
 	if packageName == "" {
 		packageName = fileName
 	}
 	// Add crc32 hash of the url to the end of the package name
-	packageNameGlobal := fmt.Sprintf("%s-%d", packageName, helpers.GetCRCHash(sanitizedURL))
+	//packageNameGlobal := fmt.Sprintf("%s-%d", packageName, helpers.GetCRCHash(sanitizedURL))
 
 	version := strings.ReplaceAll(matches[idx("version")], "/", "")
 	if version == "" {
@@ -85,7 +83,8 @@ func GenTransformURL(targetBaseURL string, sourceURL string) (*url.URL, error) {
 	}
 
 	// Rebuild the generic URL
-	transformedURL := fmt.Sprintf("%s/generic/%s/%s/%s", targetBaseURL, packageNameGlobal, version, fileName)
+	//transformedURL := fmt.Sprintf("%s/generic/%s/%s/%s", targetBaseURL, packageNameGlobal, version, fileName)
+	transformedURL := fmt.Sprintf("%s/generic/%s/%s", targetBaseURL, version, fileName)
 
 	url, err := url.Parse(transformedURL)
 	if err != nil {

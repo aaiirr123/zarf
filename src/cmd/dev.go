@@ -100,7 +100,7 @@ var devTransformGitLinksCmd = &cobra.Command{
 
 		// Perform git url transformation via regex
 		text := string(content)
-		processedText := transform.MutateGitURLsInText(message.Warnf, pkgConfig.InitOpts.GitServer.Address, text, pkgConfig.InitOpts.GitServer.PushUsername)
+		processedText := transform.MutateGitURLsInText(message.Warnf, pkgConfig.InitOpts.GitServer.Address, text, pkgConfig.InitOpts.GitServer.PushUsername, pkgConfig.InitOpts.GitServer.Group, pkgConfig.MirrorOpts.NoImgChecksum)
 
 		// Print the differences
 		message.PrintDiff(text, processedText)

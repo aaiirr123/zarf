@@ -234,7 +234,7 @@ func (h *Helm) DownloadPublishedChart(cosignKeyPath string) error {
 // DownloadChartFromGitToTemp downloads a chart from git into a temp directory
 func DownloadChartFromGitToTemp(url string, spinner *message.Spinner) (string, error) {
 	// Create the Git configuration and download the repo
-	gitCfg := git.NewWithSpinner(types.GitServerInfo{}, spinner)
+	gitCfg := git.NewWithSpinner(types.GitServerInfo{}, spinner, false)
 
 	// Download the git repo to a temporary directory
 	err := gitCfg.DownloadRepoToTemp(url)

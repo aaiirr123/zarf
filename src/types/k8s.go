@@ -107,6 +107,7 @@ type GitServerInfo struct {
 
 	Address        string `json:"address" jsonschema:"description=URL address of the git server"`
 	InternalServer bool   `json:"internalServer" jsonschema:"description=Indicates if we are using a git server that Zarf is directly managing"`
+	Group          string `json:"groupName" jsonschema:"description=Indicates the group name for a git repo"`
 }
 
 // FillInEmptyValues sets every necessary value that's currently empty to a reasonable default

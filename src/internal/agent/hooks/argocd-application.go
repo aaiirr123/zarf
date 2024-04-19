@@ -107,7 +107,7 @@ func getPatchedRepoURL(repoURL string) (string, error) {
 	// Mutate the repoURL if necessary
 	if isCreate || (isUpdate && !isPatched) {
 		// Mutate the git URL so that the hostname matches the hostname in the Zarf state
-		transformedURL, err := transform.GitURL(zarfState.GitServer.Address, patchedURL, zarfState.GitServer.PushUsername)
+		transformedURL, err := transform.GitURL(zarfState.GitServer.Address, patchedURL, zarfState.GitServer.PushUsername, zarfState.GitServer.Group, false)
 		if err != nil {
 			message.Warnf("Unable to transform the repoURL, using the original url we have: %s", patchedURL)
 		}

@@ -73,7 +73,8 @@ type ZarfDeployOptions struct {
 
 // ZarfMirrorOptions tracks the user-defined preferences during a package mirror.
 type ZarfMirrorOptions struct {
-	NoImgChecksum bool `json:"noImgChecksum" jsonschema:"description=Whether to skip adding a Zarf checksum to image references."`
+	NoImgChecksum  bool `json:"noImgChecksum" jsonschema:"description=Whether to skip adding a Zarf checksum to image references."`
+	NoRepoChecksum bool `json:"noRepoChecksum" jsonschema:"description=Whether to skip adding a Zarf checksum to repos."`
 }
 
 // ZarfPublishOptions tracks the user-defined preferences during a package publish.

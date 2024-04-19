@@ -121,7 +121,7 @@ var updateCredsCmd = &cobra.Command{
 
 			// Update artifact token (if internal)
 			if slices.Contains(args, message.ArtifactKey) && newState.ArtifactServer.PushToken == "" && newState.ArtifactServer.InternalServer {
-				g := git.New(oldState.GitServer)
+				g := git.New(oldState.GitServer, false)
 				tokenResponse, err := g.CreatePackageRegistryToken()
 				if err != nil {
 					// Warn if we couldn't actually update the git server (it might not be installed and we should try to continue)
@@ -148,7 +148,7 @@ var updateCredsCmd = &cobra.Command{
 				}
 			}
 			if slices.Contains(args, message.GitKey) && newState.GitServer.InternalServer {
-				g := git.New(newState.GitServer)
+				g := git.New(newState.GitServer, false)
 				err = g.UpdateZarfGiteaUsers(oldState)
 				if err != nil {
 					// Warn if we couldn't actually update the git server (it might not be installed and we should try to continue)

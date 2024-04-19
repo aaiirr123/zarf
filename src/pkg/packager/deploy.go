@@ -505,7 +505,7 @@ func (p *Packager) pushReposToRepository(reposPath string, repos []string) error
 	for _, repoURL := range repos {
 		// Create an anonymous function to push the repo to the Zarf git server
 		tryPush := func() error {
-			gitClient := git.New(p.cfg.State.GitServer)
+			gitClient := git.New(p.cfg.State.GitServer, p.cfg.MirrorOpts.NoRepoChecksum)
 			svcInfo, _ := k8s.ServiceInfoFromServiceURL(gitClient.Server.Address)
 
 			var err error
