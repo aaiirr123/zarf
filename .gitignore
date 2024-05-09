@@ -26,3 +26,6 @@ test-*.txt
 __debug_bin
 .netlify
 .devcontainer
+
+zarf-offline
+mirror-zarf

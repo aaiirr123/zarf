@@ -25,7 +25,7 @@ func (g *Git) PushRepo(srcURL, targetFolder string) error {
 	defer spinner.Stop()
 
 	// Setup git paths, including a unique name for the repo based on the hash of the git URL to avoid conflicts.
-	repoFolder, err := transform.GitURLtoFolderName(srcURL, g.NoChecksum)
+	repoFolder, err := transform.GitURLtoFolderName(srcURL, false)
 	if err != nil {
 		return fmt.Errorf("unable to parse git url (%s): %w", srcURL, err)
 	}
@@ -34,7 +34,7 @@ func (g *Git) PushRepo(srcURL, targetFolder string) error {
 	// Check that this package is using the new repo format (if not fallback to the format from <= 0.24.x)
 	_, err = os.Stat(repoPath)
 	if os.IsNotExist(err) {
-		repoFolder, err = transform.GitURLtoRepoName(srcURL, g.NoChecksum)
+		repoFolder, err = transform.GitURLtoRepoName(srcURL, false)
 		if err != nil {
 			return fmt.Errorf("unable to parse git url (%s): %w", srcURL, err)
 		}
